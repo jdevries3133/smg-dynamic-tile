@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import { DynamicThumbnail } from "./component/";
+import { EntryPoint } from "./components/";
 
 ReactDOM.render(
   <React.StrictMode>
-    <DynamicThumbnail />
+    <EntryPoint />
   </React.StrictMode>,
   document.getElementById("root")
 );
