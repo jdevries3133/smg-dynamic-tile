@@ -1,0 +1,14 @@
+{
+    "bars": 4,
+    "scale": "major",
+    "rootNote": 48,
+    "instrument": "marimba",
+    "tempo": 120,
+    "beats": 4,
+    "percussion": "electronic",
+    "rootOctave": 4,
+    "rootPitch": 0,
+    "percussionNotes": 2,
+    "octaves": 2,
+    "subdivision": 2
+}

@@ -1,15 +1,17 @@
-let midiParser = require("midi-parser-js");
-let fs = require("fs");
+import MidiParser from "midi-parser-js";
+import { getSongData } from "./network";
 
-// eslint-disable-next-line
-const SMG_URL =
-  "https://musiclab.chromeexperiments.com/Song-Maker/song/5703199099977728";
-
-fs.readFile("sample_data/song.mid", "base64", function (err, data) {
-  let midiArray = midiParser.parse(data);
-  midiArray.track.forEach((i) => {
-    i.event.forEach((i) => {
-      console.log(i);
+export class Song {
+  constructor(url) {
+    this.url = url;
+  }
+  parse() {
+    getSongData(this.url).then((data) => {
+      this.songData = data;
+      this.parseFetchedData();
     });
-  });
-});
+  }
+  parseFetchedData() {
+    this.midiParsed = MidiParser.parse(this.songData.midiBytes);
+  }
+}
