@@ -48,7 +48,6 @@ export const Tile = (props) => {
             xlinkHref="assets/grid.png"
           />
         </defs>
-        {props.children}
         <use id="Background-Layer" xlinkHref="#image" x="0px" y="0px" />
         {rects()}
       </svg>

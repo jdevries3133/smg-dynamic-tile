@@ -1,18 +1,42 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Song } from "./MidiParser/Parser";
+import { generateRects } from "./rectGenerator";
 
 export const DynamicTile = (props) => {
-  // put song inside useEffect to make it not block the UI thread, and assign
-  // it a ref or something so that it doesn't change on every render.
-  const [song, setSong] = useState(null);
+  const [song, setSong] = useState(null); // becomes parsed Song object instance
   useEffect(() => {
-    setSong(new Song(props.url));
+    // fetch and parse Song object
+    const songObj = new Song(props.url);
+    songObj.parse().then(() => {
+      setSong(songObj);
+    });
   }, [props.url]);
-  if (song) song.parse();
+
+  // generate rects once midi has been parsed
+  let rectsFromGenerator;
+  if (song && song.isParsed) {
+    const gridContext = {
+      pixelWidth: props.totalWidthPixels,
+      pixelHeight: props.totalHeightPixels,
+    };
+    rectsFromGenerator = generateRects(song, gridContext);
+  }
+
+  // break width and height integer props into strings in object for jsx
+  const tileSize = {
+    width: props.totalWidthPixels.toString() + "px",
+    height: props.totalHeightPixels.toString() + "px",
+  };
   return (
     <div>
-      {song ? <h1>yes</h1> : <h1>no</h1>}
-      <h1>Dynamic Tile</h1>
+      <svg {...tileSize}>
+        <defs>
+          <image id="baseImage" xlinkHref="baseGrid.jpg" {...tileSize} />
+        </defs>
+        <use id="baseImage" xlinkHref="#baseImage" x="0px" y="0px" />
+        {rectsFromGenerator}
+      </svg>
     </div>
   );
 };
@@ -30,4 +54,11 @@ function validateUrl(props, propName, componentName) {
 
 DynamicTile.propTypes = {
   url: validateUrl,
+  totalWidthPixels: PropTypes.number,
+  totalHeightPixels: PropTypes.number,
+};
+
+DynamicTile.defaultProps = {
+  totalWidthPixels: 250,
+  totalHeightPixels: 96,
 };

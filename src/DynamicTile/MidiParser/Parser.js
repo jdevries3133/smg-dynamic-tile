@@ -4,13 +4,15 @@ import { getSongData } from "./network";
 export class Song {
   constructor(url) {
     this.url = url;
+    this.isParsed = false;
   }
-  parse() {
-    getSongData(this.url).then((data) => {
+  async parse() {
+    await getSongData(this.url).then((data) => {
       this._songData = data;
       this.parseFetchedData();
       this.assignJsonAsAttrs();
     });
+    this.isParsed = true;
   }
   parseFetchedData() {
     this.midiParsed = MidiParser.parse(this._songData.midiBytes);
