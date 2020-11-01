@@ -1,7 +1,7 @@
 import React from "react";
 import { DynamicTile } from "./DynamicTile";
 
-// This is just a staging area while I work on the component.
+// a song in 4/4 time 4 measures long
 const url1 =
   "https://musiclab.chromeexperiments.com/Song-Maker/song/6701431171055616";
 
@@ -13,6 +13,10 @@ const url2 =
 const url3 =
   "https://musiclab.chromeexperiments.com/Song-Maker/song/6436082789908480";
 
+// a song in 4/4 time 3 bars long
+const url4 =
+  "https://musiclab.chromeexperiments.com/Song-Maker/song/4669822318149632";
+
 export const DevStage = (props) => {
-  return <DynamicTile url={url3} />;
+  return <DynamicTile url={url4} />;
 };

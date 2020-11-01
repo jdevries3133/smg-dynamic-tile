@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Song } from "./MidiParser/Parser";
-import { generateRects } from "./rectGenerator";
+import { RectGenerator } from "./rectGenerator";
 
 export const DynamicTile = (props) => {
   const [song, setSong] = useState(null); // becomes parsed Song object instance
@@ -14,15 +14,15 @@ export const DynamicTile = (props) => {
   }, [props.url]);
 
   // generate rects once midi has been parsed
-  let rectsFromGenerator;
+  let rectGenerator;
   if (song && song.isParsed) {
     const gridContext = {
       pixelWidth: props.totalWidthPixels,
       pixelHeight: props.totalHeightPixels,
     };
-    rectsFromGenerator = generateRects(song, gridContext);
+    rectGenerator = new RectGenerator(song, gridContext);
+    rectGenerator.generateRects();
   }
-
   // break width and height integer props into strings in object for jsx
   const tileSize = {
     width: props.totalWidthPixels.toString() + "px",
@@ -30,12 +30,19 @@ export const DynamicTile = (props) => {
   };
   return (
     <div>
-      <svg {...tileSize}>
+      <svg>
         <defs>
           <image id="baseImage" xlinkHref="baseGrid.jpg" {...tileSize} />
         </defs>
-        <use id="baseImage" xlinkHref="#baseImage" x="0px" y="0px" />
-        {rectsFromGenerator}
+        <use
+          id="baseImage"
+          xlinkHref="#baseImage"
+          width="100%"
+          height="100%"
+          x="0px"
+          y="0px"
+        />
+        {rectGenerator ? rectGenerator.rects : null}
       </svg>
     </div>
   );
@@ -59,6 +66,6 @@ DynamicTile.propTypes = {
 };
 
 DynamicTile.defaultProps = {
-  totalWidthPixels: 250,
-  totalHeightPixels: 96,
+  totalWidthPixels: 400,
+  totalHeightPixels: 200,
 };
