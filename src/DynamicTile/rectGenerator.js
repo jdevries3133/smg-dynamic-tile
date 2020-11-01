@@ -7,39 +7,20 @@ export class RectGenerator {
     this.rects = [];
     this.currentTime = 0;
   }
-
   generateRects = (song, gridContext) => {
     /*
   generate rect elements to paint song onto the base grid
-  gridContext describes the total pixel width and height of the grid, used
-  to calculate the position of the rectangles.
   */
-    /* PLANNING
-     *
-     * 1. init array of rects
-     * 3. iterate through midi data
-     *      presume that track 1 = pitched, track 2 = percussion always
-     * 3. generate rects on the fly and push them onto the array
-     *
-     * Notes
-     *
-     * Use math with the gridContext to calculate the x / y position
-     * of the rects based on where we are in the track when the rect
-     * is encountered, and the pitch of the note that is happening
-     *
-     * In the song maker, color is statically mapped to pitch. Create
-     * an object such that the pitch number can fetch the color. Consider
-     * using modulo calculation such that any pitch number can fetch the
-     * correct color.
-     */
     this.generatePitchedTrackRects();
+    // consider adding percussion notes in the future, but clipping the
+    // percussion notes may be good enough for the preview.
   };
 
   generatePitchedTrackRects() {
     const pitchedTrack = this.song.midiParsed.track[1];
+    // forEach event
     pitchedTrack.event.forEach((msg) => {
       this.currentTime += msg.deltaTime;
-      // bundle information to be referenced throughout the generation pipeline
       switch (msg.type) {
         case 12:
           // program change; comes at start of each track
@@ -88,7 +69,13 @@ export class RectGenerator {
     const width = this.gridContext.pixelWidth * PIXEL_WIDTH_TO_TILE_WIDTH_RATIO;
     const color = "??";
     this.rects.push(
-      <rect width={`${width}px`} height="8px" x={`${x}px`} y="50px" />
+      <rect
+        key={this.currentTime + Math.random().toString()}
+        width={`${width}px`}
+        height="8px"
+        x={`${x}px`}
+        y="50px"
+      />
     );
   }
 }

@@ -5,21 +5,22 @@
 // For now, the midi file and json are loaded directly.
 
 import axios from "axios";
+import { MIDI_ENDPOINT, JSON_ENDPOINT } from "../constants";
 
 async function fetchMidi(songId) {
+  const endpoint = MIDI_ENDPOINT + songId;
   return axios
-    .get(`songmidi/${songId}`, {
+    .get(endpoint, {
       responseType: "arraybuffer",
     })
     .catch((e) => console.log(e));
 }
 
 async function fetchJson(songId) {
-  return axios.get(`songjson/${songId}`).catch((e) => console.log(e));
+  return axios.get(JSON_ENDPOINT + songId).catch((e) => console.log(e));
 }
 
-export async function getSongData(url) {
-  const songId = url.split("/")[5];
+export async function getSongData(songId) {
   const midiPromise = fetchMidi(songId);
   const jsonPromise = fetchJson(songId);
   // will need to fix later; web requests will block main thread

@@ -2,12 +2,12 @@ import MidiParser from "midi-parser-js";
 import { getSongData } from "./network";
 
 export class Song {
-  constructor(url) {
-    this.url = url;
+  constructor(songId) {
+    this.songId = songId;
     this.isParsed = false;
   }
   async parse() {
-    await getSongData(this.url).then((data) => {
+    await getSongData(this.songId).then((data) => {
       this._songData = data;
       this.parseFetchedData();
       this.assignJsonAsAttrs();
