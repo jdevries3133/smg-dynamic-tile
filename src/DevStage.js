@@ -17,28 +17,10 @@ export const DevStage = (props) => {
 
   const DEFAULT_URL = urls[0];
 
-  const [inp, setInp] = useState("200");
+  const [inp, setInp] = useState("500");
   const [url, setUrl] = useState(DEFAULT_URL);
   const songId = url.slice(-16);
   const urlIsValid = SMG_URL_REGEX.test(url);
-  if (urlIsValid && !urls.includes(url)) {
-    return (
-      <div style={{ paddingLeft: "10px", paddingTop: "10px" }}>
-        <h1>Whoops!</h1>
-        <p>
-          Woah there partner, it looks like you tried to use a url that is not
-          one of these four urls that I chucked into the mock api in this repo.
-          Come back when I figure out how to build a backend for this stupid
-          square.
-        </p>
-        <ul>
-          {urls.map((u) => (
-            <li>{u}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
   return (
     <div style={{ paddingLeft: "10px", paddingTop: "10px" }}>
       {urlIsValid ? (
@@ -56,22 +38,20 @@ export const DevStage = (props) => {
           }
         }}
       />
-      <p>
-        Want to see your own song tileified? Go{" "}
-        <a href="https://musiclab.chromeexperiments.com/Song-Maker/">here</a>;
-        then, paste your link below!
-      </p>
-      <input
-        style={{ width: "500px" }}
+      <p>Want to see a different song?</p>
+      <select
         value={url}
-        onChange={(e) => setUrl(e.target.value)}
-      />
+        onChange={(e) => {
+          console.log(e.target.value);
+          setUrl(e.target.value);
+        }}
+      >
+        {urls.map((u, i) => (
+          <option value={u}>Song {i + 1}</option>
+        ))}
+      </select>
       <br />
-      {urlIsValid ? (
-        <DynamicTile totalWidthPixels={parseInt(inp)} songId={songId} />
-      ) : (
-        <h2>I can't render that url ya dingus</h2>
-      )}
+      <DynamicTile totalWidthPixels={parseInt(inp)} songId={songId} />
     </div>
   );
 };
