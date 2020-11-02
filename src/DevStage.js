@@ -47,7 +47,9 @@ export const DevStage = (props) => {
         }}
       >
         {urls.map((u, i) => (
-          <option value={u}>Song {i + 1}</option>
+          <option key={i} value={u}>
+            Song {i + 1}
+          </option>
         ))}
       </select>
       <br />
