@@ -33,14 +33,24 @@ export const DynamicTile = (props) => {
       setSong(songObj);
     });
   }, [props.songId]);
+  // width or height are undefined. ensure that they are both defined
+  let pixelWidth;
+  let pixelHeight;
+  if (props.totalWidthPixels) {
+    pixelWidth = props.totalWidthPixels;
+    pixelHeight = Math.floor(pixelWidth / ASPECT_RATIO);
+  } else if (props.totalHeightPixels) {
+    pixelHeight = props.totalHeightPixels;
+    pixelWidth = Math.floor(pixelHeight * ASPECT_RATIO);
+  }
+
   // generate rects once midi has been parsed
   let rectGenerator;
   if (song && song.isParsed) {
-    const gridContext = {
-      pixelWidth: props.totalWidthPixels,
-      pixelHeight: props.totalHeightPixels,
-    };
-    rectGenerator = new RectGenerator(song, gridContext);
+    rectGenerator = new RectGenerator(song, {
+      pixelHeight,
+      pixelWidth,
+    });
     try {
       // will throw error if unexpected midi event type occurs
       rectGenerator.generateRects();
@@ -49,24 +59,10 @@ export const DynamicTile = (props) => {
       console.log(e);
     }
   }
-  const calcTileSize = ({ totalWidthPixels, totalHeightPixels }) => {
-    // 1. break width and height into jsx-friendly object.
-    // 2. Calculate width if height is given; calculate height if width is
-    //    given.
-    if (totalWidthPixels) {
-      // this will always be the case for now
-      totalHeightPixels = totalWidthPixels / ASPECT_RATIO;
-    } else if (totalHeightPixels) {
-      // todo acccept height as a prop instead of width and calculate the width
-      // instead.
-      totalWidthPixels = totalHeightPixels * ASPECT_RATIO;
-    }
-    return {
-      width: totalWidthPixels + "px",
-      height: totalHeightPixels + "px",
-    };
+  const tileSize = {
+    width: pixelWidth + "px",
+    height: pixelHeight + "px",
   };
-  const tileSize = calcTileSize(props);
   return (
     <div
       style={{
@@ -102,8 +98,8 @@ export const DynamicTile = (props) => {
 
 DynamicTile.propTypes = {
   songId: PropTypes.string.isRequired,
-  totalWidthPixels: validateWidthHeight,
-  totalHeightPixels: validateWidthHeight,
+  pixelWidth: validateWidthHeight,
+  pixelHeight: validateWidthHeight,
 };
 
 DynamicTile.defaultProps = {

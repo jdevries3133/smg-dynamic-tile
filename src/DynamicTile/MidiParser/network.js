@@ -13,23 +13,33 @@ async function fetchMidi(songId) {
     .get(endpoint, {
       responseType: "arraybuffer",
     })
-    .catch((e) => console.log(e));
+    .catch((e) => console.error(`Midi data for songId ${songId} not found`));
 }
 
 async function fetchJson(songId) {
-  return axios.get(JSON_ENDPOINT + songId).catch((e) => console.log(e));
+  return axios
+    .get(JSON_ENDPOINT + songId)
+    .catch((e) => console.error(`Json object for songId ${songId} not found`));
 }
 
 export async function getSongData(songId) {
   const midiPromise = fetchMidi(songId);
   const jsonPromise = fetchJson(songId);
   // will need to fix later; web requests will block main thread
-  let returnData = {};
-  await Promise.all([midiPromise, jsonPromise]).then(([midi, json]) => {
-    returnData["midiBytes"] = btoa(
-      String.fromCharCode.apply(null, new Uint8Array(midi.data))
-    );
-    returnData["json"] = json.data;
-  });
+  let returnData;
+  await Promise.all([midiPromise, jsonPromise])
+    .then(([midi, json]) => {
+      returnData = {
+        midiBytes: btoa(
+          String.fromCharCode.apply(null, new Uint8Array(midi.data))
+        ),
+        json: json.data,
+      };
+    })
+    .catch((e) => {
+      console.warn(
+        "<DynamicTile>: Network error fetching song data. Is the backend properly configured?"
+      );
+    });
   return returnData;
 }

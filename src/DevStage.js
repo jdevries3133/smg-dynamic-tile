@@ -4,23 +4,32 @@ import { DynamicTile } from "./DynamicTile";
 import { SMG_URL_REGEX } from "./DynamicTile/constants";
 
 export const DevStage = (props) => {
-  const urls = [
-    // a song in 4/4 time 4 measures long
-    "https://musiclab.chromeexperiments.com/Song-Maker/song/6701431171055616",
-    // same as url1, but faster
-    "https://musiclab.chromeexperiments.com/Song-Maker/song/5769053162438656",
-    // a song in 9/8 time 3 bars long
-    "https://musiclab.chromeexperiments.com/Song-Maker/song/6436082789908480",
-    // a song in 4/4 time 3 bars long
-    "https://musiclab.chromeexperiments.com/Song-Maker/song/4669822318149632",
-  ];
+  const urls = {
+    "4/4, 4 measures long":
+      "https://musiclab.chromeexperiments.com/Song-Maker/song/6701431171055616",
+    "same as previous, but faster tempo":
+      "https://musiclab.chromeexperiments.com/Song-Maker/song/5769053162438656",
+    "9/8, 3 measures long":
+      "https://musiclab.chromeexperiments.com/Song-Maker/song/6436082789908480",
+    "4/4, 3 bars long":
+      "https://musiclab.chromeexperiments.com/Song-Maker/song/4669822318149632",
+    "4/4, 2 bars long":
+      "https://musiclab.chromeexperiments.com/Song-Maker/song/5179528870625280",
+  };
 
-  const DEFAULT_URL = urls[0];
-
+  const DEFAULT_URL = urls["4/4, 4 measures long"];
   const [inp, setInp] = useState("500");
   const [url, setUrl] = useState(DEFAULT_URL);
   const songId = url.slice(-16);
   const urlIsValid = SMG_URL_REGEX.test(url);
+  const options = [];
+  for (const description in urls) {
+    options.push(
+      <option key={description} value={urls[description]}>
+        {description}
+      </option>
+    );
+  }
   return (
     <div style={{ paddingLeft: "10px", paddingTop: "10px" }}>
       {urlIsValid ? (
@@ -42,18 +51,13 @@ export const DevStage = (props) => {
       <select
         value={url}
         onChange={(e) => {
-          console.log(e.target.value);
           setUrl(e.target.value);
         }}
       >
-        {urls.map((u, i) => (
-          <option key={i} value={u}>
-            Song {i + 1}
-          </option>
-        ))}
+        {options}
       </select>
       <br />
-      <DynamicTile totalWidthPixels={parseInt(inp)} songId={songId} />
+      <DynamicTile pixelHeight={parseInt(inp)} songId={songId} />
     </div>
   );
 };
