@@ -1,7 +1,14 @@
+/*
+ * TODO
+ *
+ * 1. Generate grid
+ * 2. Wrap component in pretty fallback / error boundary
+ */
+
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Song } from "./MidiParser/Parser";
-import { RectGenerator } from "./rectGenerator";
+import { RectGenerator, GridGenerator } from "./svgGenerators";
 import { validateWidthHeight } from "./customPropTypes";
 import { ASPECT_RATIO } from "./constants";
 
@@ -46,11 +53,16 @@ export const DynamicTile = (props) => {
 
   // generate rects once midi has been parsed
   let rectGenerator;
+  let gridGenerator;
   if (song && song.isParsed) {
-    rectGenerator = new RectGenerator(song, {
+    const gridSize = {
       pixelHeight,
       pixelWidth,
-    });
+    };
+    rectGenerator = new RectGenerator(song, gridSize);
+    gridGenerator = new GridGenerator(song, gridSize);
+    // generate grid outside try/catch because it should not throw errors.
+    gridGenerator.generateGrid();
     try {
       // will throw error if unexpected midi event type occurs
       rectGenerator.generateRects();
@@ -69,6 +81,8 @@ export const DynamicTile = (props) => {
         display: "inline-block",
         width: tileSize.width,
         height: tileSize.height,
+        backgroundColor: "white",
+        boxShadow: "5px 10px 10px #888888",
       }}
     >
       <svg
@@ -80,17 +94,8 @@ export const DynamicTile = (props) => {
         )}`}
         xmlns="https://www.w3.org/2000/svg"
       >
-        <defs>
-          <image
-            id="baseImage"
-            xlinkHref="baseGrid.jpg"
-            width={tileSize.width}
-            x="0px"
-            y="0px"
-          />
-        </defs>
-        <use id="baseImage" xlinkHref="#baseImage" />
         {rectGenerator ? rectGenerator.rects : null}
+        {gridGenerator ? gridGenerator.grid : null}
       </svg>
     </div>
   );

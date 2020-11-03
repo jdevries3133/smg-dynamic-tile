@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PITCH_COLORS } from "./constants";
+import { PITCH_COLORS } from "../constants";
 
 export class RectGenerator {
   /*
