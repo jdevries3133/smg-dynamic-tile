@@ -18,7 +18,7 @@ export const DevStage = (props) => {
   };
 
   const DEFAULT_URL = urls["4/4, 4 measures long"];
-  const [inp, setInp] = useState("500");
+  const [inp, setInp] = useState("300");
   const [url, setUrl] = useState(DEFAULT_URL);
   const songId = url.slice(-16);
   const urlIsValid = SMG_URL_REGEX.test(url);
@@ -31,7 +31,12 @@ export const DevStage = (props) => {
     );
   }
   return (
-    <div style={{ paddingLeft: "10px", paddingTop: "10px" }}>
+    <div
+      style={{
+        paddingLeft: "10px",
+        paddingTop: "10px",
+      }}
+    >
       {urlIsValid ? (
         <a href={url}>Link to the song being displayed</a>
       ) : (
